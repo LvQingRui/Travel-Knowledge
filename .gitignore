@@ -1,0 +1,36 @@
+# 环境变量（含密码，勿提交）
+.env
+
+# Docker 数据卷
+data/
+
+# 本地模型（体积大，勿提交）
+/models/
+app/models/bge-m3/
+app/models/bge-reranker-large/
+*.bin
+*.safetensors
+*.pt
+.msc
+.mv
+.mdl
+
+# 密钥与本地配置
+.env
+.env.local
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store

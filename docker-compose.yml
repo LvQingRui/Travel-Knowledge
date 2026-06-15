@@ -1,0 +1,69 @@
+# 旅游知识库 - 基础设施服务
+# Milvus（单容器嵌入式，更稳定）+ MongoDB + MinIO
+
+services:
+  # ========== Milvus 向量数据库（嵌入式 etcd + 本地存储）==========
+  milvus:
+    container_name: travel-milvus
+    image: milvusdb/milvus:v2.4.15
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      ETCD_USE_EMBED: "true"
+      ETCD_DATA_DIR: /var/lib/milvus/etcd
+      ETCD_CONFIG_PATH: /milvus/configs/embedEtcd.yaml
+      COMMON_STORAGETYPE: local
+      DEPLOY_MODE: STANDALONE
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    volumes:
+      - ./data/milvus:/var/lib/milvus
+      - ./config/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ./config/user.yaml:/milvus/configs/user.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 120s
+      timeout: 20s
+      retries: 5
+    restart: unless-stopped
+
+  # ========== MinIO 业务文件存储 ==========
+  minio:
+    container_name: travel-minio
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./data/minio:/minio_data
+    command: minio server /minio_data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  # ========== MongoDB 对话历史 ==========
+  mongodb:
+    container_name: travel-mongodb
+    image: mongo:7.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: mongo123456
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped

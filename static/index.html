@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>旅游知识库</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>旅游知识库</h1>
+        <p>智能 RAG 问答助手</p>
+      </div>
+      <button id="newChatBtn" class="btn-primary">+ 新对话</button>
+      <div class="session-list" id="sessionList">
+        <p class="empty-tip">暂无历史会话</p>
+      </div>
+    </aside>
+
+    <main class="chat-main">
+      <header class="chat-header">
+        <div>
+          <h2 id="chatTitle">新对话</h2>
+          <span class="session-id" id="sessionIdLabel">未开始会话</span>
+        </div>
+        <div class="chat-header-actions">
+          <button id="deleteCurrentBtn" class="btn-delete-header" title="删除当前会话" hidden>删除会话</button>
+          <a href="/docs" target="_blank" class="link-docs">API 文档</a>
+        </div>
+      </header>
+
+      <div class="messages" id="messages">
+        <div class="welcome">
+          <h3>你好，我是旅游知识库助手</h3>
+          <p>可以问我景点介绍、美食推荐、线路规划等问题，例如：</p>
+          <div class="suggestions">
+            <button class="suggestion" data-q="张家界有什么特色美食？">张家界有什么特色美食？</button>
+            <button class="suggestion" data-q="三亚有哪些必去景点？">三亚有哪些必去景点？</button>
+            <button class="suggestion" data-q="丽江古城最佳游览时间？">丽江古城最佳游览时间？</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="input-area">
+        <div class="input-row">
+          <textarea
+            id="queryInput"
+            rows="1"
+            placeholder="输入你的旅游问题，Enter 发送，Shift+Enter 换行"
+          ></textarea>
+          <button id="sendBtn" class="btn-send" title="发送">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+        <p class="input-hint">基于知识库检索 + DeepSeek 生成，回答附带引用来源</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
